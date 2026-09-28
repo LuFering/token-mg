@@ -1,0 +1,73 @@
+# 在 GitHub Actions 上渲染 HyperFrames 成片。
+#
+# 关键点：runner 上没有 GPU，而 shader 转场走的是 WebGL —— 用 --no-browser-gpu
+# 强制 SwiftShader 软件渲染，行为确定、不依赖显卡。
+#
+# 成本高没关系（用户 2026-09-29 明确：可以往高成本高难度做，只要效果精美），
+# 所以这里不省：跑完整 check 闸门（lint + 运行时校验 + 布局巡检）再渲染。
+name: render
+
+on:
+  workflow_dispatch:
+    inputs:
+      skip_check:
+        description: '跳过 check 闸门直接渲染'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  render:
+    name: Render HyperFrames composition
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      # HyperFrames 需要 ffmpeg；它下载的 Chrome 需要那一套共享库
+      # （https://www.remotion.dev/docs/miscellaneous/linux-dependencies 同源问题）
+      - name: Install ffmpeg + Chrome shared libraries
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq \
+            ffmpeg \
+            libnss3 libdbus-1-3 libatk1.0-0 libasound2t64 libxrandr2 \
+            libxkbcommon-dev libxfixes3 libxcomposite1 libxdamage1 \
+            libgbm-dev libcups2 libcairo2 libpango-1.0-0 libatk-bridge2.0-0
+
+      # HyperFrames 自己管理 Chrome（下载到 ~/.cache/hyperframes）
+      - name: Cache HyperFrames Chrome
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/hyperframes
+          key: hyperframes-chrome-${{ runner.os }}-0.8.83
+
+      - name: Ensure Chrome
+        run: npx --yes hyperframes@0.8.83 browser ensure
+
+      - name: Check (lint + runtime + layout inspect)
+        if: ${{ !inputs.skip_check }}
+        run: npx --yes hyperframes@0.8.83 check
+
+      - name: Render
+        run: |
+          npx --yes hyperframes@0.8.83 render \
+            --no-browser-gpu \
+            --workers=4
+
+      - name: Report
+        if: always()
+        run: ls -lh renders/ || true
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: render-${{ github.run_number }}
+          path: renders/*.mp4
+          retention-days: 14
+          if-no-files-found: error
