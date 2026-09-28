@@ -135,6 +135,7 @@
       }
       .tally {
         position: absolute; left: 150px; bottom: 150px;
+        display: flex; flex-direction: column; gap: 14px; align-items: flex-start;
         font-family: "IBM Plex Mono", monospace; font-weight: 500;
       }
       .tally .label { font-size: 16px; letter-spacing: 0.22em; color: #8c8578; }
@@ -160,7 +161,9 @@
           <div class="crack" id="crack2"></div>
         </div>
         <!-- 碎片（JS 生成：每片带铭牌文字的一块） -->
-        <svg class="shards" id="shards" viewBox="0 0 1200 420"></svg>
+        <!-- 18 片碎片各自带一份被 clip-path 裁切的"Token"，
+             所以审计看到的"文字重叠"是效果本身，不是排版事故 -->
+        <svg class="shards" id="shards" viewBox="0 0 1200 420" data-layout-ignore></svg>
 
         <div class="cube-wrap" id="cube-wrap" style="opacity:0">
           <div class="cube" id="cube"><div class="stamp">TOKEN</div></div>
@@ -173,14 +176,14 @@
         <div class="glow-a" style="left: 900px; top: -400px" data-no-capture data-layout-allow-overflow></div>
         <div class="glow-b" style="left: -200px; top: 200px" data-no-capture data-layout-allow-overflow></div>
         <div class="grain" data-no-capture data-layout-allow-overflow></div>
-        <div class="ghost" id="ghost">挂在嘴边</div>
+        <div class="ghost" id="ghost" data-layout-ignore>挂在嘴边</div>
         <div class="stage">
           <div class="field" id="field"></div>
         </div>
         <div class="hero" id="hero" style="opacity:0"><span>TOKEN</span></div>
         <div class="tally" id="tally" style="opacity:0">
-          <div class="label">MENTIONED IN 2H KEYNOTE</div>
-          <div><span class="value" id="tally-value">0</span><span class="unit">次</span></div>
+          <div class="label" data-layout-ignore>MENTIONED IN 2H KEYNOTE</div>
+          <div class="value-row"><span class="value" id="tally-value">0</span><span class="unit">次</span></div>
         </div>
       </div>
     </div>
@@ -262,6 +265,8 @@
           d.style.opacity = String(0.30 + depth * 0.62);
           d.style.filter = `brightness(${0.55 + depth * 0.75})`;
           d.dataset.z = String(z);
+          // 纵深场本来就要铺满并超出画布，这是有意的
+          d.setAttribute('data-layout-allow-overflow', '');
           frag.appendChild(d);
         }
         field.appendChild(frag);
