@@ -100,28 +100,39 @@
       </div>
 
       <!-- 原声：视频 muted，声音走独立 audio；用 volume 自动化通道 -->
+      <!-- 原声：视频 muted，声音走独立 audio；按各卡落定时刻进轨 -->
       <audio id="a1" data-start="1.590" data-duration="0.534" src="assets/voice/1.m4a"
-             data-automation=\'{"version":1,"lanes":[{"target":"volume","points":[{"t":0,"v":0},{"t":0.05,"v":1},{"t":0.454,"v":1},{"t":0.534,"v":0}]}]}\'></audio>
+             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.05,"v":1.0},{"t":0.454,"v":1.0},{"t":0.534,"v":0.0}]}]}'></audio>
       <audio id="a2" data-start="2.090" data-duration="0.580" src="assets/voice/2.m4a"
-             data-automation=\'{"version":1,"lanes":[{"target":"volume","points":[{"t":0,"v":0},{"t":0.05,"v":1},{"t":0.500,"v":1},{"t":0.580,"v":0}]}]}\'></audio>
+             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.05,"v":1.0},{"t":0.5,"v":1.0},{"t":0.58,"v":0.0}]}]}'></audio>
       <audio id="a3" data-start="2.500" data-duration="1.021" src="assets/voice/3.m4a"
-             data-automation=\'{"version":1,"lanes":[{"target":"volume","points":[{"t":0,"v":0},{"t":0.05,"v":1},{"t":0.941,"v":1},{"t":1.021,"v":0}]}]}\'></audio>
+             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.05,"v":1.0},{"t":0.941,"v":1.0},{"t":1.021,"v":0.0}]}]}'></audio>
       <audio id="a4" data-start="2.870" data-duration="0.836" src="assets/voice/4.m4a"
-             data-automation=\'{"version":1,"lanes":[{"target":"volume","points":[{"t":0,"v":0},{"t":0.05,"v":1},{"t":0.756,"v":1},{"t":0.836,"v":0}]}]}\'></audio>
+             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.05,"v":1.0},{"t":0.756,"v":1.0},{"t":0.836,"v":0.0}]}]}'></audio>
       <audio id="a5" data-start="3.920" data-duration="4.249" src="assets/voice/5.m4a"
-             data-automation=\'{"version":1,"lanes":[{"target":"volume","points":[{"t":0,"v":0},{"t":0.05,"v":1},{"t":4.169,"v":1},{"t":4.249,"v":0}]}]}\'></audio>
+             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.05,"v":1.0},{"t":4.169,"v":1.0},{"t":4.249,"v":0.0}]}]}'></audio>
 
       <!-- SFX：逐拍钉帧（判例 S2）—— 每条注明对应动作 -->
-      <audio id="x-rise"  data-start="0"    data-duration="4.60" src="assets/sfx/riser-cine.mp3" data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0,"v":0},{"t":0.6,"v":0.3},{"t":3.9999999999999996,"v":0.3},{"t":4.6,"v":0}]}]}'></audio>
-      <audio id="x-s1"    data-start="0.60" data-duration="0.79" src="assets/sfx/swoosh-quick.mp3" data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0,"v":0},{"t":0.03,"v":0.34},{"t":0.7100000000000001,"v":0.34},{"t":0.79,"v":0}]}]}'></audio>
-      <audio id="x-s2"    data-start="1.10" data-duration="0.79" src="assets/sfx/swoosh-quick.mp3" data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0,"v":0},{"t":0.03,"v":0.32},{"t":0.7100000000000001,"v":0.32},{"t":0.79,"v":0}]}]}'></audio>
-      <audio id="x-s3"    data-start="1.55" data-duration="0.79" src="assets/sfx/swoosh-quick.mp3" data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0,"v":0},{"t":0.03,"v":0.3},{"t":0.7100000000000001,"v":0.3},{"t":0.79,"v":0}]}]}'></audio>
-      <audio id="x-s4"    data-start="1.96" data-duration="0.79" src="assets/sfx/swoosh-quick.mp3" data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0,"v":0},{"t":0.03,"v":0.28},{"t":0.7100000000000001,"v":0.28},{"t":0.79,"v":0}]}]}'></audio>
-      <audio id="x-hero"  data-start="2.58" data-duration="1.51" src="assets/sfx/air-woosh-quick.mp3" data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0,"v":0},{"t":0.04,"v":0.4},{"t":1.3900000000000001,"v":0.4},{"t":1.51,"v":0}]}]}'></audio>
-      <audio id="x-hit"   data-start="3.90" data-duration="1.22" src="assets/sfx/impact-zoom-quick.mp3" data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0,"v":0},{"t":0.03,"v":0.42},{"t":1.02,"v":0.42},{"t":1.22,"v":0}]}]}'></audio>
-      <audio id="x-drop"  data-start="3.45" data-duration="0.59" src="assets/sfx/hit-weak.mp3" data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0,"v":0},{"t":0.02,"v":0.22},{"t":0.49,"v":0.22},{"t":0.59,"v":0}]}]}'></audio>
-      <audio id="x-open"  data-start="5.05" data-duration="1.84" src="assets/sfx/air-whoosh-powerful.mp3" data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0,"v":0},{"t":0.05,"v":0.42},{"t":1.54,"v":0.42},{"t":1.84,"v":0}]}]}'></audio>
-      <audio id="x-glint" data-start="5.60" data-duration="2.33" src="assets/sfx/sparkle-touch.mp3" data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0,"v":0},{"t":0.06,"v":0.26},{"t":1.9300000000000002,"v":0.26},{"t":2.33,"v":0}]}]}'></audio>
+      <audio id="x-rise" data-start="0.000" data-duration="4.600" src="assets/sfx/riser-cine.mp3"
+             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.6,"v":0.3},{"t":4.0,"v":0.3},{"t":4.6,"v":0.0}]}]}'></audio>
+      <audio id="x-s1" data-start="0.600" data-duration="0.781" src="assets/sfx/swoosh-quick.mp3"
+             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.03,"v":0.34},{"t":0.701,"v":0.34},{"t":0.781,"v":0.0}]}]}'></audio>
+      <audio id="x-s2" data-start="1.100" data-duration="0.781" src="assets/sfx/swoosh-quick.mp3"
+             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.03,"v":0.32},{"t":0.701,"v":0.32},{"t":0.781,"v":0.0}]}]}'></audio>
+      <audio id="x-s3" data-start="1.550" data-duration="0.781" src="assets/sfx/swoosh-quick.mp3"
+             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.03,"v":0.3},{"t":0.701,"v":0.3},{"t":0.781,"v":0.0}]}]}'></audio>
+      <audio id="x-s4" data-start="1.960" data-duration="0.781" src="assets/sfx/swoosh-quick.mp3"
+             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.03,"v":0.28},{"t":0.701,"v":0.28},{"t":0.781,"v":0.0}]}]}'></audio>
+      <audio id="x-hero" data-start="2.580" data-duration="1.511" src="assets/sfx/air-woosh-quick.mp3"
+             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.04,"v":0.4},{"t":1.391,"v":0.4},{"t":1.511,"v":0.0}]}]}'></audio>
+      <audio id="x-hit" data-start="3.900" data-duration="1.222" src="assets/sfx/impact-zoom-quick.mp3"
+             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.03,"v":0.42},{"t":1.022,"v":0.42},{"t":1.222,"v":0.0}]}]}'></audio>
+      <audio id="x-drop" data-start="3.450" data-duration="0.591" src="assets/sfx/hit-weak.mp3"
+             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.02,"v":0.22},{"t":0.491,"v":0.22},{"t":0.591,"v":0.0}]}]}'></audio>
+      <audio id="x-open" data-start="5.050" data-duration="1.839" src="assets/sfx/air-whoosh-powerful.mp3"
+             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.05,"v":0.42},{"t":1.539,"v":0.42},{"t":1.839,"v":0.0}]}]}'></audio>
+      <audio id="x-glint" data-start="5.600" data-duration="2.333" src="assets/sfx/sparkle-touch.mp3"
+             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.06,"v":0.26},{"t":1.933,"v":0.26},{"t":2.333,"v":0.0}]}]}'></audio>
     </div>
 
     <script>
