@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>从相册递卡片 · token</title>
+    <script src="assets/gsap.min.js"></script>
+    <style>
+      * { box-sizing: border-box; }
+
+      html, body {
+        margin: 0;
+        padding: 0;
+        background: #e9e7e2;
+        overflow: hidden;
+      }
+
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      /* ── 纸张底 ─────────────────────────────────────── */
+      .paper {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          ellipse 78% 68% at 50% 42%,
+          #f2f0eb 0%, #e9e7e1 62%, #dedbd4 100%
+        );
+      }
+      .paper::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        filter: url(#paperGrain);
+        opacity: 0.20;
+        mix-blend-mode: multiply;
+      }
+      .paper::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(
+          92deg,
+          rgba(120, 114, 104, 0.026) 0px,
+          rgba(120, 114, 104, 0.026) 1px,
+          transparent 1px,
+          transparent 5px
+        );
+      }
+
+      /* ── 卡片 ───────────────────────────────────────── */
+      .card {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        background: #fff;
+        border-radius: 20px;
+      }
+      /* 投影单独一层：展开时把它淡掉，否则放大后阴影会从画面边缘渗进来 */
+      .shade {
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        box-shadow:
+          0 22px 44px rgba(38, 34, 29, 0.20),
+          0 6px 14px rgba(38, 34, 29, 0.12),
+          0 1px 2px rgba(38, 34, 29, 0.10);
+      }
+      /* 卡身内侧一圈极淡暗边，避免纯白贴在浅灰底上发飘 */
+      .card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        box-shadow: inset 0 0 0 1px rgba(120, 114, 104, 0.16);
+      }
+
+      .window {
+        position: relative;
+        overflow: hidden;
+        border-radius: 12px;
+        background: #cfccc6;
+      }
+
+      /* 4:3 拍立得：左右上 26px 白边，下方 58px 留白 */
+      .c43 { width: 572px; height: 474px; padding: 26px 26px 58px; }
+      .c43 .window { width: 520px; height: 390px; }
+
+      /* 16:9 压轴卡：左右上 28px，下方 62px */
+      .c169 { width: 856px; height: 540px; padding: 28px 28px 62px; border-radius: 24px; }
+      .c169 .window { width: 800px; height: 450px; }
+
+      .clip {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      /* ── 相册卡堆 ───────────────────────────────────── */
+      .pile { position: absolute; inset: 0; }
+      .pile i {
+        position: absolute;
+        display: block;
+        width: 600px;
+        height: 430px;
+        border-radius: 18px;
+        background: #fdfdfc;
+        box-shadow:
+          0 14px 26px rgba(38, 34, 29, 0.15),
+          0 2px 5px rgba(38, 34, 29, 0.10),
+          inset 0 0 0 1px rgba(120, 114, 104, 0.14);
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- 纸张颗粒：确定性噪声，不依赖任何外部资源 -->
+    <svg width="0" height="0" aria-hidden="true" style="position: absolute">
+      <filter id="paperGrain" x="0" y="0" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="4" seed="17" result="n" />
+        <feColorMatrix in="n" type="saturate" values="0" />
+      </filter>
+    </svg>
+
+    <div
+      id="root"
+      data-composition-id="token-album"
+      data-start="0"
+      data-width="1920"
+      data-height="1080"
+      data-duration="7.34"
+    >
+      <div class="paper"></div>
+
+      <!-- 五张卡片：普通（非定时）容器，由主时间轴驱动；
+           视频/定格是定时片段放在里面，自动继承卡片的一切变换 -->
+      <div class="card c43" id="card1">
+        <span class="shade"></span>
+        <div class="window">
+          <video class="clip" id="v1" src="assets/video/1.mp4"
+                 data-start="1.10" data-duration="0.5333" muted playsinline></video>
+          <img class="clip" id="f1" src="assets/freeze/1-last.png"
+               data-start="1.6333" data-duration="5.7000" alt="" />
+        </div>
+      </div>
+
+      <div class="card c43" id="card2">
+        <span class="shade"></span>
+        <div class="window">
+          <video class="clip" id="v2" src="assets/video/2.mp4"
+                 data-start="1.60" data-duration="0.5667" muted playsinline></video>
+          <img class="clip" id="f2" src="assets/freeze/2-last.png"
+               data-start="2.1667" data-duration="5.1666" alt="" />
+        </div>
+      </div>
+
+      <div class="card c43" id="card3">
+        <span class="shade"></span>
+        <div class="window">
+          <video class="clip" id="v3" src="assets/video/3.mp4"
+                 data-start="2.10" data-duration="1.0000" muted playsinline></video>
+          <img class="clip" id="f3" src="assets/freeze/3-last.png"
+               data-start="3.1000" data-duration="4.2333" alt="" />
+        </div>
+      </div>
+
+      <div class="card c43" id="card4">
+        <span class="shade"></span>
+        <div class="window">
+          <video class="clip" id="v4" src="assets/video/4.mp4"
+                 data-start="2.60" data-duration="0.8333" muted playsinline></video>
+          <img class="clip" id="f4" src="assets/freeze/4-last.png"
+               data-start="3.4333" data-duration="3.9000" alt="" />
+        </div>
+      </div>
+
+      <div class="card c169" id="card5">
+        <span class="shade" id="shade5"></span>
+        <div class="window" id="win5">
+          <video class="clip" id="v5" src="assets/video/5.mp4"
+                 data-start="3.10" data-duration="4.2333" muted playsinline></video>
+        </div>
+      </div>
+
+      <!-- 相册卡堆：画在卡片之上，抽卡时遮住卡片下缘，只露出上边缘。
+           最前面那张的上边缘 = 抽卡口（y=820），后面的逐张上移 8px 露出卡边。
+           底部故意延伸到画布之外（相册"坐在"画面下沿下方） -->
+      <div class="pile" data-layout-allow-overflow>
+        <i style="left: 660px; top: 780px; transform: rotate(-0.5deg)"></i>
+        <i style="left: 656px; top: 788px; transform: rotate(0.9deg)"></i>
+        <i style="left: 663px; top: 796px; transform: rotate(-1.0deg)"></i>
+        <i style="left: 657px; top: 804px; transform: rotate(0.6deg)"></i>
+        <i style="left: 662px; top: 812px; transform: rotate(-0.7deg)"></i>
+        <i style="left: 659px; top: 820px; transform: rotate(0.2deg);
+                  box-shadow: 0 20px 34px rgba(38,34,29,0.20), 0 3px 7px rgba(38,34,29,0.12),
+                              inset 0 0 0 1px rgba(120,114,104,0.16)"></i>
+      </div>
+
+      <!-- 声音：视频必须静音，声音走独立的 audio 元素 -->
+      <audio id="a1" src="assets/video/1.mp4" data-start="1.10" data-duration="0.5333" data-volume="1"></audio>
+      <audio id="a2" src="assets/video/2.mp4" data-start="1.60" data-duration="0.5667" data-volume="1"></audio>
+      <audio id="a3" src="assets/video/3.mp4" data-start="2.10" data-duration="1.0000" data-volume="1"></audio>
+      <audio id="a4" src="assets/video/4.mp4" data-start="2.60" data-duration="0.8333" data-volume="1"></audio>
+      <audio id="a5" src="assets/video/5.mp4" data-start="3.10" data-duration="4.2333" data-volume="1"></audio>
+    </div>
+
+    <script>
+      (function () {
+        "use strict";
+
+        var TOTAL      = 7.3333;   // 全片时长 = 压轴视频播完
+        var ZOOM_START = 4.40;     // 压轴卡停留结束，开始展开
+        var ZOOM_DUR   = 1.00;
+
+        var EMERGE = 0.35;         // 只露上边缘 -> 被捏住往外拉
+        var FLY    = 0.45;         // 递出飞行
+        var LAND   = EMERGE + FLY; // 0.80s 落定
+
+        var PILE_TOP  = 820;       // 抽卡口（卡堆最前面那张的上边缘）
+        var ORIGIN_X  = 960;
+        var ORIGIN_S  = 0.30;
+
+        var BOB_CYCLE = 0.45;      // 落定后"拿在手里"的呼吸周期
+        var BOB_AMP   = 5;         // 像素
+
+        // 卡身高度（与 CSS 一致），用于把"完全藏进卡堆"换算成元素中心位置
+        var BODY_H = { c43: 474, c169: 540 };
+
+        // 落点：卡身中心（画布像素）+ 缩放 + 旋转
+        var CARDS = [
+          { n: 1, cls: "c43",  land: 1.10, tx: 580,  ty: 330, s: 0.95, rot: -7 },
+          { n: 2, cls: "c43",  land: 1.60, tx: 1340, ty: 350, s: 0.93, rot:  6 },
+          { n: 3, cls: "c43",  land: 2.10, tx: 620,  ty: 560, s: 0.96, rot:  5 },
+          { n: 4, cls: "c43",  land: 2.60, tx: 1320, ty: 565, s: 0.94, rot: -6 },
+          { n: 5, cls: "c169", land: 3.10, tx: 960,  ty: 540, s: 0.90, rot:  0 }
+        ];
+
+        // 压轴展开：窗口 800x450，缩放 2.4 时正好铺满 1920x1080
+        var ZOOM_S = 2.4;
+        // 窗口中心比卡身中心高 17px（上方白边 28px vs 下方 62px）。
+        // 展开到位时卡身中心要落到 540 + 17*2.4，窗口中心才在画布正中。
+        var ZOOM_Y = 17 * ZOOM_S;
+
+        var tl = gsap.timeline({ paused: true });
+
+        CARDS.forEach(function (c) {
+          var el = document.getElementById("card" + c.n);
+          var isHero = c.n === 5;
+
+          var start = c.land - LAND;
+          var dx = c.tx - 960;
+          var dy = c.ty - 540;
+          var ox = ORIGIN_X - 960;
+          // 起始时卡片完全藏在卡堆后面：上边缘正好落在抽卡口
+          var oy = (PILE_TOP + (BODY_H[c.cls] * ORIGIN_S) / 2) - 540;
+
+          // 中途：先被"捏住"往上提一小段，再飞出去
+          var mx = ox + 0.10 * (dx - ox);
+          var my = oy + 0.18 * (dy - oy);
+          var ms = ORIGIN_S + 0.15 * (c.s - ORIGIN_S);
+          var mr = c.rot * 0.3;
+
+          gsap.set(el, {
+            xPercent: -50, yPercent: -50,
+            x: ox, y: oy,
+            scale: ORIGIN_S,
+            rotation: 0,
+            opacity: 0
+          });
+
+          tl.set(el, { opacity: 1 }, start);
+          tl.to(el, {
+            x: mx, y: my, scale: ms, rotation: mr,
+            duration: EMERGE, ease: "sine.inOut"
+          }, start);
+          tl.to(el, {
+            x: dx, y: dy, scale: c.s, rotation: c.rot,
+            duration: FLY, ease: "power3.out"
+          }, start + EMERGE);
+
+          if (isHero) {
+            // 停留期呼吸（半周期数取偶，保证收在落定姿态上）
+            var avail  = ZOOM_START - c.land;
+            var halves = Math.floor(avail / (BOB_CYCLE / 2));
+            if (halves % 2 === 1) halves -= 1;
+            var reps = halves - 1;
+            if (reps > 0) {
+              tl.to(el, {
+                y: dy + BOB_AMP, duration: BOB_CYCLE / 2,
+                ease: "sine.inOut", yoyo: true, repeat: reps
+              }, c.land);
+            }
+
+            // 展开：白边、圆角、投影被推出画面，窗口铺满全屏。
+            // 先把压轴卡抬到相册之上，否则全屏后会被卡堆盖住一角。
+            tl.set(el, { zIndex: 40 }, ZOOM_START);
+            tl.to(el, {
+              x: dx, y: ZOOM_Y, scale: ZOOM_S, rotation: 0,
+              duration: ZOOM_DUR, ease: "power2.inOut"
+            }, ZOOM_START);
+            // 投影单独淡掉（放大后阴影会从边缘渗进来）
+            tl.to("#shade5", {
+              opacity: 0, duration: ZOOM_DUR * 0.6, ease: "power1.in"
+            }, ZOOM_START + ZOOM_DUR * 0.3);
+            // 窗口圆角归零，否则铺满后四角会露出白底
+            tl.to("#win5", {
+              borderRadius: 0, duration: ZOOM_DUR * 0.6, ease: "power1.inOut"
+            }, ZOOM_START + ZOOM_DUR * 0.25);
+          } else {
+            var span   = TOTAL - c.land;
+            var h2     = Math.floor(span / (BOB_CYCLE / 2));
+            if (h2 % 2 === 1) h2 -= 1;
+            var r2 = h2 - 1;
+            if (r2 > 0) {
+              tl.to(el, {
+                y: dy + BOB_AMP, duration: BOB_CYCLE / 2,
+                ease: "sine.inOut", yoyo: true, repeat: r2
+              }, c.land);
+            }
+          }
+        });
+
+        window.__timelines["token-album"] = tl;
+      })();
+    </script>
+  </body>
+</html>
