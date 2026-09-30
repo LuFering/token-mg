@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>多画面叠放 · 压轴满屏</title>
+    <script src="assets/gsap.min.js"></script>
+    <style>
+      * { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; overflow: hidden; background: #0b0c0e; }
+
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+
+      /* ── 底：暖深灰纸面，给整片一个共同光环境 ───────────── */
+      .bg {
+        position: absolute; inset: 0;
+        background: radial-gradient(ellipse 84% 76% at 50% 40%,
+          #272930 0%, #1b1d22 58%, #111215 100%);
+      }
+      .bg::after {
+        content: ""; position: absolute; inset: 0;
+        filter: url(#grain); opacity: .06; mix-blend-mode: overlay;
+      }
+      .bg::before {
+        content: ""; position: absolute; inset: -10%;
+        background: repeating-linear-gradient(104deg,
+          rgba(255,255,255,.022) 0 1px, transparent 1px 9px);
+      }
+
+      /* ── 画面卡 ──────────────────────────────────────────
+         绝对定位：白边由 .win 的 inset 做出。
+         展开时只改 .win 的 inset，视频始终填满 .win，不会重排/抖动。 */
+      .shot {
+        position: absolute;
+        left: 50%; top: 50%;
+        border-radius: 22px;
+        background: #faf8f4;
+        will-change: transform;
+        transform-style: flat;
+      }
+      .win {
+        position: absolute;
+        overflow: hidden;
+        border-radius: 14px;
+        background: #0d0e10;
+      }
+      .win video {
+        position: absolute; inset: 0;
+        width: 100%; height: 100%;
+        object-fit: cover; display: block;
+      }
+    </style>
+  </head>
+
+  <body>
+    <svg width="0" height="0" aria-hidden="true" style="position:absolute">
+      <filter id="grain" x="0" y="0" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" seed="11" result="n" />
+        <feColorMatrix in="n" type="saturate" values="0" />
+      </filter>
+    </svg>
+
+    <div id="root" data-composition-id="stack"
+         data-start="0" data-width="1920" data-height="1080" data-duration="8.18">
+
+      <div class="bg"></div>
+
+      <!-- 前置画面：窗口 620x465，白边 28 -> 卡 676x521 -->
+      <div class="shot" id="s1" style="width:676px;height:521px">
+        <div class="win" style="inset:28px" >
+          <video id="v1" data-start="0" data-duration="6.66" src="assets/media/1-pad.mp4" muted playsinline></video>
+        </div>
+      </div>
+      <div class="shot" id="s2" style="width:676px;height:521px">
+        <div class="win" style="inset:28px">
+          <video id="v2" data-start="0" data-duration="6.16" src="assets/media/2-pad.mp4" muted playsinline></video>
+        </div>
+      </div>
+      <div class="shot" id="s3" style="width:676px;height:521px">
+        <div class="win" style="inset:28px">
+          <video id="v3" data-start="0" data-duration="5.75" src="assets/media/3-pad.mp4" muted playsinline></video>
+        </div>
+      </div>
+      <div class="shot" id="s4" style="width:676px;height:521px" data-layout-allow-overflow>
+        <div class="win" style="inset:28px">
+          <video id="v4" data-start="0" data-duration="5.38" src="assets/media/4-pad.mp4" muted playsinline></video>
+        </div>
+      </div>
+
+      <!-- 压轴：窗口 864x486，白边 28 -> 卡 920x542 -->
+      <div class="shot" id="s5" style="width:920px;height:542px;border-radius:24px">
+        <div class="win" id="w5" style="inset:28px">
+          <video id="v5" data-start="0" data-duration="8.18" src="assets/media/5-main.mp4" muted playsinline></video>
+        </div>
+      </div>
+
+      <!-- 原声：视频 muted，声音走独立 audio；用 volume 自动化通道 -->
+      <!-- 原声：视频 muted，声音走独立 audio；按各卡落定时刻进轨 -->
+      <audio id="a1" data-start="1.590" data-duration="0.534" src="assets/voice/1.m4a"
+             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.05,"v":1.0},{"t":0.454,"v":1.0},{"t":0.534,"v":0.0}]}]}'></audio>
+      <audio id="a2" data-start="2.090" data-duration="0.580" src="assets/voice/2.m4a"
+             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.05,"v":1.0},{"t":0.5,"v":1.0},{"t":0.58,"v":0.0}]}]}'></audio>
+      <audio id="a3" data-start="2.500" data-duration="1.021" src="assets/voice/3.m4a"
+             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.05,"v":1.0},{"t":0.941,"v":1.0},{"t":1.021,"v":0.0}]}]}'></audio>
+      <audio id="a4" data-start="2.870" data-duration="0.836" src="assets/voice/4.m4a"
+             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.05,"v":1.0},{"t":0.756,"v":1.0},{"t":0.836,"v":0.0}]}]}'></audio>
+      <audio id="a5" data-start="3.920" data-duration="4.249" src="assets/voice/5.m4a"
+             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.05,"v":1.0},{"t":4.169,"v":1.0},{"t":4.249,"v":0.0}]}]}'></audio>
+
+      <!-- SFX：逐拍钉帧（判例 S2）—— 每条注明对应动作 -->
+      <audio id="x-rise" data-start="0.000" data-duration="4.600" src="assets/sfx/riser-cine.mp3"
+             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.6,"v":0.3},{"t":4.0,"v":0.3},{"t":4.6,"v":0.0}]}]}'></audio>
+      <audio id="x-s1" data-start="0.600" data-duration="0.781" src="assets/sfx/swoosh-quick.mp3"
+             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.03,"v":0.34},{"t":0.701,"v":0.34},{"t":0.781,"v":0.0}]}]}'></audio>
+      <audio id="x-s2" data-start="1.100" data-duration="0.781" src="assets/sfx/swoosh-quick.mp3"
+             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.03,"v":0.32},{"t":0.701,"v":0.32},{"t":0.781,"v":0.0}]}]}'></audio>
+      <audio id="x-s3" data-start="1.550" data-duration="0.781" src="assets/sfx/swoosh-quick.mp3"
+             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.03,"v":0.3},{"t":0.701,"v":0.3},{"t":0.781,"v":0.0}]}]}'></audio>
+      <audio id="x-s4" data-start="1.960" data-duration="0.781" src="assets/sfx/swoosh-quick.mp3"
+             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.03,"v":0.28},{"t":0.701,"v":0.28},{"t":0.781,"v":0.0}]}]}'></audio>
+      <audio id="x-hero" data-start="2.580" data-duration="1.511" src="assets/sfx/air-woosh-quick.mp3"
+             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.04,"v":0.4},{"t":1.391,"v":0.4},{"t":1.511,"v":0.0}]}]}'></audio>
+      <audio id="x-hit" data-start="3.900" data-duration="1.222" src="assets/sfx/impact-zoom-quick.mp3"
+             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.03,"v":0.42},{"t":1.022,"v":0.42},{"t":1.222,"v":0.0}]}]}'></audio>
+      <audio id="x-drop" data-start="3.450" data-duration="0.591" src="assets/sfx/hit-weak.mp3"
+             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.02,"v":0.22},{"t":0.491,"v":0.22},{"t":0.591,"v":0.0}]}]}'></audio>
+      <audio id="x-open" data-start="5.050" data-duration="1.839" src="assets/sfx/air-whoosh-powerful.mp3"
+             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.05,"v":0.42},{"t":1.539,"v":0.42},{"t":1.839,"v":0.0}]}]}'></audio>
+      <audio id="x-glint" data-start="5.600" data-duration="2.333" src="assets/sfx/sparkle-touch.mp3"
+             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.06,"v":0.26},{"t":1.933,"v":0.26},{"t":2.333,"v":0.0}]}]}'></audio>
+    </div>
+
+    <script>
+      (function () {
+        "use strict";
+
+        // ── 节拍（判例 R2：速度感来自加速度，不是匀速）────────
+        var C1 = 0.62;                  // 第 1 张升入
+        var GAP = [0.50, 0.45, 0.41];   // 相邻间隔递减
+        var RISE = 0.62;                // 升入
+        var OVER = 0.26;                // settle 过冲
+        var PRESS = 0.09;               // 压弹回稳
+
+        var HOLD = 1.15;                // 压轴停稳呼吸（判例 R3：宁慢勿快）
+        var ZOOM = 1.05;                // 展开
+
+        // 前置画面落点：各自不同倾角、错落叠放
+        var LAY = [
+          { id: "s1", at: [ 634, 318], s: 0.87, rot: -8.5, cue: C1 },
+          { id: "s2", at: [1272, 352], s: 0.85, rot:  6.8, cue: C1 + GAP[0] },
+          { id: "s3", at: [ 682, 728], s: 0.89, rot:  5.2, cue: C1 + GAP[0] + GAP[1] },
+          { id: "s4", at: [1238, 744], s: 0.86, rot: -6.4, cue: C1 + GAP[0] + GAP[1] + GAP[2] }
+        ];
+        var HERO = { id: "s5", at: [960, 540], s: 0.90, rot: 0.0, cue: 2.60 };
+
+        LAY.forEach(function (c) { c.land = c.cue + RISE + OVER + PRESS; });
+        HERO.land = HERO.cue + RISE + OVER + PRESS;
+
+        var ZOOM_AT  = HERO.land + HOLD;
+        var ZOOM_END = ZOOM_AT + ZOOM;
+
+        // 展开终值：窗口 864 -> 1920，缩放 2.2222
+        var ZS = 1920 / 864;
+        // 展开后窗口贴在画布四边：inset 28*2.2222 ≈ 62 的边距要变成负值，
+        // 使窗口铺满外层卡。窗口尺寸 = 卡宽*ZS - 2*inset*ZS。
+        // 直接令窗口 inset 为 0 且卡片缩放后窗口正好 1920x1080：
+        //   卡宽 920 * ZS = 2044.4  ->  窗口 = 2044.4 - 2*inset*ZS
+        //   要窗口=1920 -> inset*ZS = 62.2 -> inset = 28 ✓
+        // 所以展开到位时把 inset 设为 28 保持不变即可（几何自洽），
+        // 只需把圆角和投影去掉、白边淡出。
+        var tl = gsap.timeline({ paused: true });
+
+        function riseIn(c) {
+          var el = document.getElementById(c.id);
+          var wx = c.at[0] - 960, wy = c.at[1] - 540;
+
+          var fromX = wx * 0.16;
+          var fromY = 580;
+          var fromRot = c.rot * -0.38;
+          var fromS = c.s * 0.78;
+
+          gsap.set(el, {
+            xPercent: -50, yPercent: -50,
+            x: fromX, y: fromY, scale: fromS, rotation: fromRot,
+            opacity: 0, transformOrigin: "50% 62%"
+          });
+
+          var t0 = c.cue;
+          tl.set(el, { opacity: 1 }, t0);
+
+          // 升入：expo.out = 快起慢收
+          tl.to(el, {
+            x: wx, y: wy, scale: c.s, rotation: c.rot,
+            duration: RISE, ease: "expo.out"
+          }, t0);
+          // settle：过冲（y 越过落点 13px）
+          tl.to(el, {
+            y: wy - 13, scale: c.s * 1.013, rotation: c.rot + c.rot * 0.07,
+            duration: OVER, ease: "back.out(2.4)"
+          }, t0 + RISE);
+          // press：压弹回稳
+          tl.to(el, {
+            y: wy, scale: c.s, rotation: c.rot,
+            duration: PRESS, ease: "power2.out"
+          }, t0 + RISE + OVER);
+
+          // 落定后极轻呼吸（判例：拿在手里，不许死）
+          var breath = Math.floor((ZOOM_AT - c.land - 0.1) / 0.52);
+          if (breath > 0) {
+            tl.to(el, {
+              y: wy + 5, duration: 0.52, ease: "sine.inOut",
+              yoyo: true, repeat: breath - 1
+            }, c.land + 0.1);
+          }
+
+          // 投影：飞行时大而软，落定后收；投影收敛滞后卡体（拖拽层级）
+          var win = el.querySelector(".win");
+          tl.fromTo(el, {
+            boxShadow: "0 64px 96px rgba(0,0,0,.62), 0 16px 30px rgba(0,0,0,.44)"
+          }, {
+            boxShadow: "0 30px 52px rgba(0,0,0,.46), 0 7px 16px rgba(0,0,0,.32)",
+            duration: RISE, ease: "expo.out"
+          }, t0);
+          tl.to(el, {
+            boxShadow: "0 18px 30px rgba(0,0,0,.40), 0 4px 9px rgba(0,0,0,.28)",
+            duration: 0.36, ease: "power2.out"
+          }, t0 + RISE + OVER * 0.55);
+
+          return el;
+        }
+
+        LAY.forEach(riseIn);
+        var heroEl = riseIn(HERO);
+
+        // ── 压轴：停留呼吸 → 平滑放大铺满 ──────────────────────
+        (function () {
+          var el = heroEl;
+          var wx = HERO.at[0] - 960, wy = HERO.at[1] - 540;
+          var win = document.getElementById("w5");
+
+          // 停留期呼吸
+          var n = Math.floor(HOLD / 0.5);
+          if (n > 0) {
+            tl.to(el, {
+              y: wy + 4, duration: 0.5, ease: "sine.inOut",
+              yoyo: true, repeat: n - 1
+            }, HERO.land + 0.08);
+          }
+
+          // 展开：把窗口直接开到满画布尺寸，同时卡片缩放到位。
+          // 关键：不能只靠 scale —— 白边是卡身上的 28px 环带，
+          // 缩放后必然是 62px 的可见边，会在画面四周留白。
+          // 正确做法：让窗口自身从 864x486 长到 1920x1080、inset 收到 0，
+          // 于是视频真正铺满；卡身的白边被推到画布之外，视觉上"边框消失"。
+          tl.to(win, {
+            inset: 0,
+            width: "1920px", height: "1080px",
+            borderRadius: "0px",
+            duration: ZOOM, ease: "power2.inOut"
+          }, ZOOM_AT);
+
+          // 卡片同时缩放：卡尺寸要从 920x542 变到能容纳 1920x1080 的窗口。
+          // 窗口现在绝对定位在卡内 (0,0,1920,1080)，卡缩放到 1 即可，
+          // 所以把 scale 收回到 1、位置归零 —— 卡成为 1920x1080 的一层。
+          tl.to(el, {
+            x: 0, y: 0, scale: 1, rotation: 0,
+            width: "1920px", height: "1080px",
+            borderRadius: "0px",
+            duration: ZOOM, ease: "power2.inOut"
+          }, ZOOM_AT);
+
+          // 白底与投影在展开前段就淡掉（0.35 内），避免任何边缘残影
+          tl.to(el, { backgroundColor: "rgba(250,248,244,0)", duration: ZOOM * 0.45, ease: "power1.out" },
+                ZOOM_AT + ZOOM * 0.10);
+          tl.to(el, { boxShadow: "0 0 0 rgba(0,0,0,0)", duration: ZOOM * 0.4, ease: "power1.out" },
+                ZOOM_AT + ZOOM * 0.08);
+        })();
+
+        window.__timelines["stack"] = tl;
+      })();
+    </script>
+  </body>
+</html>

@@ -49,11 +49,14 @@
         border-radius: 14px;
         background: #0d0e10;
       }
-      .win video {
+      .win video, .win .poster {
         position: absolute; inset: 0;
         width: 100%; height: 100%;
         object-fit: cover; display: block;
       }
+      /* 视频起播前显示的静帧，避免卡片窗口是黑块 */
+      .win .poster { z-index: 0; }
+      .win video { z-index: 1; }
     </style>
   </head>
 
@@ -66,113 +69,73 @@
     </svg>
 
     <div id="root" data-composition-id="stack"
-         data-start="0" data-width="1920" data-height="1080" data-duration="8.18">
+         data-start="0" data-width="1920" data-height="1080" data-duration="14.183">
 
       <div class="bg"></div>
 
       <!-- 前置画面：窗口 620x465，白边 28 -> 卡 676x521 -->
       <div class="shot" id="s1" style="width:676px;height:521px">
         <div class="win" style="inset:28px" >
-          <video id="v1" data-start="0" data-duration="6.66" src="assets/media/1-pad.mp4" muted playsinline></video>
+          <img class="poster" src="assets/poster/1.jpg" alt="" />
+          <video id="v1" data-start="0.8" data-duration="13.383" src="assets/media/1-pad.mp4" muted playsinline></video>
         </div>
       </div>
       <div class="shot" id="s2" style="width:676px;height:521px">
         <div class="win" style="inset:28px">
-          <video id="v2" data-start="0" data-duration="6.16" src="assets/media/2-pad.mp4" muted playsinline></video>
+          <img class="poster" src="assets/poster/2.jpg" alt="" />
+          <video id="v2" data-start="2.9" data-duration="11.283" src="assets/media/2-pad.mp4" muted playsinline></video>
         </div>
       </div>
       <div class="shot" id="s3" style="width:676px;height:521px">
         <div class="win" style="inset:28px">
-          <video id="v3" data-start="0" data-duration="5.75" src="assets/media/3-pad.mp4" muted playsinline></video>
+          <img class="poster" src="assets/poster/3.jpg" alt="" />
+          <video id="v3" data-start="5.0" data-duration="9.183" src="assets/media/3-pad.mp4" muted playsinline></video>
         </div>
       </div>
       <div class="shot" id="s4" style="width:676px;height:521px" data-layout-allow-overflow>
         <div class="win" style="inset:28px">
-          <video id="v4" data-start="0" data-duration="5.38" src="assets/media/4-pad.mp4" muted playsinline></video>
+          <img class="poster" src="assets/poster/4.jpg" alt="" />
+          <video id="v4" data-start="7.1" data-duration="7.083" src="assets/media/4-pad.mp4" muted playsinline></video>
         </div>
       </div>
 
       <!-- 压轴：窗口 864x486，白边 28 -> 卡 920x542 -->
       <div class="shot" id="s5" style="width:920px;height:542px;border-radius:24px">
         <div class="win" id="w5" style="inset:28px">
-          <video id="v5" data-start="0" data-duration="8.18" src="assets/media/5-main.mp4" muted playsinline></video>
+          <img class="poster" src="assets/poster/5.jpg" alt="" />
+          <video id="v5" data-start="9.2" data-duration="4.983" src="assets/media/5-main.mp4" muted playsinline></video>
         </div>
       </div>
-
-      <!-- 原声：视频 muted，声音走独立 audio；用 volume 自动化通道 -->
       <!-- 原声：视频 muted，声音走独立 audio；按各卡落定时刻进轨 -->
-      <audio id="a1" data-start="1.590" data-duration="0.534" src="assets/voice/1.m4a"
-             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.05,"v":1.0},{"t":0.454,"v":1.0},{"t":0.534,"v":0.0}]}]}'></audio>
-      <audio id="a2" data-start="2.090" data-duration="0.580" src="assets/voice/2.m4a"
-             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.05,"v":1.0},{"t":0.5,"v":1.0},{"t":0.58,"v":0.0}]}]}'></audio>
-      <audio id="a3" data-start="2.500" data-duration="1.021" src="assets/voice/3.m4a"
-             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.05,"v":1.0},{"t":0.941,"v":1.0},{"t":1.021,"v":0.0}]}]}'></audio>
-      <audio id="a4" data-start="2.870" data-duration="0.836" src="assets/voice/4.m4a"
-             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.05,"v":1.0},{"t":0.756,"v":1.0},{"t":0.836,"v":0.0}]}]}'></audio>
-      <audio id="a5" data-start="3.920" data-duration="4.249" src="assets/voice/5.m4a"
-             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.05,"v":1.0},{"t":4.169,"v":1.0},{"t":4.249,"v":0.0}]}]}'></audio>
-
-      <!-- SFX：逐拍钉帧（判例 S2）—— 每条注明对应动作 -->
-      <audio id="x-rise" data-start="0.000" data-duration="4.600" src="assets/sfx/riser-cine.mp3"
-             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.6,"v":0.3},{"t":4.0,"v":0.3},{"t":4.6,"v":0.0}]}]}'></audio>
-      <audio id="x-s1" data-start="0.600" data-duration="0.781" src="assets/sfx/swoosh-quick.mp3"
-             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.03,"v":0.34},{"t":0.701,"v":0.34},{"t":0.781,"v":0.0}]}]}'></audio>
-      <audio id="x-s2" data-start="1.100" data-duration="0.781" src="assets/sfx/swoosh-quick.mp3"
-             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.03,"v":0.32},{"t":0.701,"v":0.32},{"t":0.781,"v":0.0}]}]}'></audio>
-      <audio id="x-s3" data-start="1.550" data-duration="0.781" src="assets/sfx/swoosh-quick.mp3"
-             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.03,"v":0.3},{"t":0.701,"v":0.3},{"t":0.781,"v":0.0}]}]}'></audio>
-      <audio id="x-s4" data-start="1.960" data-duration="0.781" src="assets/sfx/swoosh-quick.mp3"
-             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.03,"v":0.28},{"t":0.701,"v":0.28},{"t":0.781,"v":0.0}]}]}'></audio>
-      <audio id="x-hero" data-start="2.580" data-duration="1.511" src="assets/sfx/air-woosh-quick.mp3"
-             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.04,"v":0.4},{"t":1.391,"v":0.4},{"t":1.511,"v":0.0}]}]}'></audio>
-      <audio id="x-hit" data-start="3.900" data-duration="1.222" src="assets/sfx/impact-zoom-quick.mp3"
-             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.03,"v":0.42},{"t":1.022,"v":0.42},{"t":1.222,"v":0.0}]}]}'></audio>
-      <audio id="x-drop" data-start="3.450" data-duration="0.591" src="assets/sfx/hit-weak.mp3"
-             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.02,"v":0.22},{"t":0.491,"v":0.22},{"t":0.591,"v":0.0}]}]}'></audio>
-      <audio id="x-open" data-start="5.050" data-duration="1.839" src="assets/sfx/air-whoosh-powerful.mp3"
-             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.05,"v":0.42},{"t":1.539,"v":0.42},{"t":1.839,"v":0.0}]}]}'></audio>
-      <audio id="x-glint" data-start="5.600" data-duration="2.333" src="assets/sfx/sparkle-touch.mp3"
-             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.06,"v":0.26},{"t":1.933,"v":0.26},{"t":2.333,"v":0.0}]}]}'></audio>
+      <audio id="a1" data-start="0.8" data-duration="0.533" src="assets/voice/1.m4a"
+             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.04,"v":1.0},{"t":0.463,"v":1.0},{"t":0.533,"v":0.0}]}]}'></audio>
+      <audio id="a2" data-start="2.9" data-duration="0.567" src="assets/voice/2.m4a"
+             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.04,"v":1.0},{"t":0.497,"v":1.0},{"t":0.567,"v":0.0}]}]}'></audio>
+      <audio id="a3" data-start="5.0" data-duration="1.0" src="assets/voice/3.m4a"
+             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.04,"v":1.0},{"t":0.93,"v":1.0},{"t":1.0,"v":0.0}]}]}'></audio>
+      <audio id="a4" data-start="7.1" data-duration="0.833" src="assets/voice/4.m4a"
+             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.04,"v":1.0},{"t":0.763,"v":1.0},{"t":0.833,"v":0.0}]}]}'></audio>
+      <audio id="a5" data-start="9.2" data-duration="4.233" src="assets/voice/5.m4a"
+             data-automation='{"version":1,"lanes":[{"target":"volume","points":[{"t":0.0,"v":0.0},{"t":0.04,"v":1.0},{"t":4.163,"v":1.0},{"t":4.233,"v":0.0}]}]}'></audio>
     </div>
 
     <script>
       (function () {
         "use strict";
 
-        // ── 节拍（判例 R2：速度感来自加速度，不是匀速）────────
-        var C1 = 0.62;                  // 第 1 张升入
-        var GAP = [0.50, 0.45, 0.41];   // 相邻间隔递减
-        var RISE = 0.62;                // 升入
-        var OVER = 0.26;                // settle 过冲
-        var PRESS = 0.09;               // 压弹回稳
-
-        var HOLD = 1.15;                // 压轴停稳呼吸（判例 R3：宁慢勿快）
-        var ZOOM = 1.05;                // 展开
-
-        // 前置画面落点：各自不同倾角、错落叠放
         var LAY = [
-          { id: "s1", at: [ 634, 318], s: 0.87, rot: -8.5, cue: C1 },
-          { id: "s2", at: [1272, 352], s: 0.85, rot:  6.8, cue: C1 + GAP[0] },
-          { id: "s3", at: [ 682, 728], s: 0.89, rot:  5.2, cue: C1 + GAP[0] + GAP[1] },
-          { id: "s4", at: [1238, 744], s: 0.86, rot: -6.4, cue: C1 + GAP[0] + GAP[1] + GAP[2] }
+          { id: "s1", at: [634, 318], s: 0.87, rot: -8.5, cue: 0.5, land: 1.3 },
+          { id: "s2", at: [1272, 352], s: 0.85, rot: 6.8, cue: 2.6, land: 3.4 },
+          { id: "s3", at: [682, 728], s: 0.89, rot: 5.2, cue: 4.7, land: 5.5 },
+          { id: "s4", at: [1238, 744], s: 0.86, rot: -6.4, cue: 6.8, land: 7.6 },
+          { id: "s5", at: [960, 540], s: 0.9, rot: 0.0, cue: 8.9, land: 9.7 }
         ];
-        var HERO = { id: "s5", at: [960, 540], s: 0.90, rot: 0.0, cue: 2.60 };
+        var ZOOM_AT = 10.9, ZOOM_END = 11.95, TOTAL = 14.183;
 
-        LAY.forEach(function (c) { c.land = c.cue + RISE + OVER + PRESS; });
-        HERO.land = HERO.cue + RISE + OVER + PRESS;
+        // 单条卡片的落定三拍（升入 -> 过冲 -> 压弹）
+        var RISE = 0.5, OVER = 0.22, PRESS = 0.08;
+        var HOLD = 1.2, ZOOM = 1.05;
 
-        var ZOOM_AT  = HERO.land + HOLD;
-        var ZOOM_END = ZOOM_AT + ZOOM;
-
-        // 展开终值：窗口 864 -> 1920，缩放 2.2222
-        var ZS = 1920 / 864;
-        // 展开后窗口贴在画布四边：inset 28*2.2222 ≈ 62 的边距要变成负值，
-        // 使窗口铺满外层卡。窗口尺寸 = 卡宽*ZS - 2*inset*ZS。
-        // 直接令窗口 inset 为 0 且卡片缩放后窗口正好 1920x1080：
-        //   卡宽 920 * ZS = 2044.4  ->  窗口 = 2044.4 - 2*inset*ZS
-        //   要窗口=1920 -> inset*ZS = 62.2 -> inset = 28 ✓
-        // 所以展开到位时把 inset 设为 28 保持不变即可（几何自洽），
-        // 只需把圆角和投影去掉、白边淡出。
         var tl = gsap.timeline({ paused: true });
 
         function riseIn(c) {
@@ -231,11 +194,22 @@
             duration: 0.36, ease: "power2.out"
           }, t0 + RISE + OVER * 0.55);
 
+          // 前四张：压轴卡放大时同步淡出，避免它的白边在中央卡周围形成一圈白框
+          if (c.id !== "s5") {
+            tl.to(el, { opacity: 1, duration: 0.001 }, ZOOM_AT);
+            tl.to(el, {
+              opacity: 0,
+              duration: ZOOM * 0.55,
+              ease: "power1.in"
+            }, ZOOM_AT + ZOOM * 0.20);
+          }
+
           return el;
         }
 
-        LAY.forEach(riseIn);
-        var heroEl = riseIn(HERO);
+        LAY.forEach(function (c) { riseIn(c); });
+        var heroEl = document.getElementById("s5");
+        var HERO = LAY[4];
 
         // ── 压轴：停留呼吸 → 平滑放大铺满 ──────────────────────
         (function () {
@@ -257,26 +231,27 @@
           // 缩放后必然是 62px 的可见边，会在画面四周留白。
           // 正确做法：让窗口自身从 864x486 长到 1920x1080、inset 收到 0，
           // 于是视频真正铺满；卡身的白边被推到画布之外，视觉上"边框消失"。
+          // 窗口收 inset 到负值：让窗口**大于**卡片，彻底盖住卡身与圆角边缘，
+          // 避免展开完成后画面四边/四角残留一像素的卡片白底。
           tl.to(win, {
-            inset: 0,
-            width: "1920px", height: "1080px",
+            inset: "-4px",
             borderRadius: "0px",
             duration: ZOOM, ease: "power2.inOut"
           }, ZOOM_AT);
 
-          // 卡片同时缩放：卡尺寸要从 920x542 变到能容纳 1920x1080 的窗口。
-          // 窗口现在绝对定位在卡内 (0,0,1920,1080)，卡缩放到 1 即可，
-          // 所以把 scale 收回到 1、位置归零 —— 卡成为 1920x1080 的一层。
+          // 卡片尺寸与窗口一并长到画布大小：
+          // 窗口 inset:0 时窗口 == 卡片；卡片 1920x1080 且居中于画布，
+          // 于是窗口正好覆盖 0..1920 x 0..1080，不会露出任何白边。
           tl.to(el, {
             x: 0, y: 0, scale: 1, rotation: 0,
-            width: "1920px", height: "1080px",
+            width: "1928px", height: "1088px",
             borderRadius: "0px",
             duration: ZOOM, ease: "power2.inOut"
           }, ZOOM_AT);
 
           // 白底与投影在展开前段就淡掉（0.35 内），避免任何边缘残影
-          tl.to(el, { backgroundColor: "rgba(250,248,244,0)", duration: ZOOM * 0.45, ease: "power1.out" },
-                ZOOM_AT + ZOOM * 0.10);
+          // 用 gsap.set 直接清掉背景色，避免 background 简写与 backgroundColor 补间打架
+          tl.set(el, { background: "none" }, ZOOM_AT);
           tl.to(el, { boxShadow: "0 0 0 rgba(0,0,0,0)", duration: ZOOM * 0.4, ease: "power1.out" },
                 ZOOM_AT + ZOOM * 0.08);
         })();
